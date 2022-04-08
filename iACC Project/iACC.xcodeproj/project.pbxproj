@@ -45,6 +45,11 @@
 		08927BD6268618AC009195BD /* NotImplementedViewControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08927BCC268618AC009195BD /* NotImplementedViewControllers.swift */; };
 		9FCB8D91280077C6003127E4 /* ItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCB8D90280077C6003127E4 /* ItemProvider.swift */; };
 		9FCB8D932800780F003127E4 /* CardAPIItemProviderAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCB8D922800780F003127E4 /* CardAPIItemProviderAdapter.swift */; };
+		9FCB8D9528007B6D003127E4 /* FriendsAPIItemProviderAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCB8D9428007B6D003127E4 /* FriendsAPIItemProviderAdapter.swift */; };
+		9FCB8D9728007BC9003127E4 /* TransfersAPIItemProviderAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCB8D9628007BC9003127E4 /* TransfersAPIItemProviderAdapter.swift */; };
+		9FCB8D9928008CB7003127E4 /* CompositionItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCB8D9828008CB7003127E4 /* CompositionItemProvider.swift */; };
+		9FCB8D9B28008D72003127E4 /* FriendsCacheItemProviderAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCB8D9A28008D72003127E4 /* FriendsCacheItemProviderAdapter.swift */; };
+		9FCB8D9D28008DD7003127E4 /* NullObjectItemProviderAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FCB8D9C28008DD7003127E4 /* NullObjectItemProviderAdapter.swift */; };
 		9FD4A1A0280071E700F35F2C /* ItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FD4A19F280071E700F35F2C /* ItemViewModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -101,6 +106,11 @@
 		08927BCC268618AC009195BD /* NotImplementedViewControllers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotImplementedViewControllers.swift; sourceTree = "<group>"; };
 		9FCB8D90280077C6003127E4 /* ItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemProvider.swift; sourceTree = "<group>"; };
 		9FCB8D922800780F003127E4 /* CardAPIItemProviderAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardAPIItemProviderAdapter.swift; sourceTree = "<group>"; };
+		9FCB8D9428007B6D003127E4 /* FriendsAPIItemProviderAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsAPIItemProviderAdapter.swift; sourceTree = "<group>"; };
+		9FCB8D9628007BC9003127E4 /* TransfersAPIItemProviderAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransfersAPIItemProviderAdapter.swift; sourceTree = "<group>"; };
+		9FCB8D9828008CB7003127E4 /* CompositionItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionItemProvider.swift; sourceTree = "<group>"; };
+		9FCB8D9A28008D72003127E4 /* FriendsCacheItemProviderAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsCacheItemProviderAdapter.swift; sourceTree = "<group>"; };
+		9FCB8D9C28008DD7003127E4 /* NullObjectItemProviderAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullObjectItemProviderAdapter.swift; sourceTree = "<group>"; };
 		9FD4A19F280071E700F35F2C /* ItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -264,7 +274,12 @@
 		9FCB8D8F28007791003127E4 /* Adapters */ = {
 			isa = PBXGroup;
 			children = (
+				9FCB8D9828008CB7003127E4 /* CompositionItemProvider.swift */,
 				9FCB8D922800780F003127E4 /* CardAPIItemProviderAdapter.swift */,
+				9FCB8D9428007B6D003127E4 /* FriendsAPIItemProviderAdapter.swift */,
+				9FCB8D9628007BC9003127E4 /* TransfersAPIItemProviderAdapter.swift */,
+				9FCB8D9A28008D72003127E4 /* FriendsCacheItemProviderAdapter.swift */,
+				9FCB8D9C28008DD7003127E4 /* NullObjectItemProviderAdapter.swift */,
 			);
 			name = Adapters;
 			sourceTree = "<group>";
@@ -407,20 +422,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FCB8D9928008CB7003127E4 /* CompositionItemProvider.swift in Sources */,
 				08927B932686183A009195BD /* AppDelegate.swift in Sources */,
+				9FCB8D9528007B6D003127E4 /* FriendsAPIItemProviderAdapter.swift in Sources */,
 				08927BCF268618AC009195BD /* ListViewController.swift in Sources */,
 				08040FFC268B4C1D0062A93B /* MainTabBarController.swift in Sources */,
 				9FD4A1A0280071E700F35F2C /* ItemViewModel.swift in Sources */,
+				9FCB8D9B28008D72003127E4 /* FriendsCacheItemProviderAdapter.swift in Sources */,
 				9FCB8D932800780F003127E4 /* CardAPIItemProviderAdapter.swift in Sources */,
 				08927BD0268618AC009195BD /* CardAPI.swift in Sources */,
 				08927BD6268618AC009195BD /* NotImplementedViewControllers.swift in Sources */,
 				08927BD5268618AC009195BD /* FriendsAPI.swift in Sources */,
+				9FCB8D9728007BC9003127E4 /* TransfersAPIItemProviderAdapter.swift in Sources */,
 				08927BD1268618AC009195BD /* FriendsCache.swift in Sources */,
 				080833E0268F609C00A8099A /* Helpers.swift in Sources */,
 				08927BCD268618AC009195BD /* SegmentNavigationViewController.swift in Sources */,
 				080833E2268F69C200A8099A /* ArticlesAPI.swift in Sources */,
 				08927B952686183A009195BD /* SceneDelegate.swift in Sources */,
 				08927BD2268618AC009195BD /* TransfersAPI.swift in Sources */,
+				9FCB8D9D28008DD7003127E4 /* NullObjectItemProviderAdapter.swift in Sources */,
 				9FCB8D91280077C6003127E4 /* ItemProvider.swift in Sources */,
 				08927BD4268618AC009195BD /* User.swift in Sources */,
 			);

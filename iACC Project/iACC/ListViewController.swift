@@ -18,6 +18,8 @@ class ListViewController: UITableViewController {
   var fromCardsScreen = false
   var fromFriendsScreen = false
 
+  var itemProvider: ItemProvider?
+
   override func viewDidLoad() {
     super.viewDidLoad()
 
@@ -67,82 +69,40 @@ class ListViewController: UITableViewController {
 
   @objc private func refresh() {
     refreshControl?.beginRefreshing()
-    if fromFriendsScreen {
-      FriendsAPI.shared.loadFriends { [weak self] result in
-        DispatchQueue.mainAsyncIfNeeded {
-          self?.handleAPIResult(result)
-        }
+
+    itemProvider?.loadItems(completion: { [weak self] result in
+      DispatchQueue.mainAsyncIfNeeded {
+        self?.handleAPIResult(result)
       }
-    } else if fromCardsScreen {
-      CardAPI.shared.loadCards { [weak self] result in
-        DispatchQueue.mainAsyncIfNeeded {
-          self?.handleAPIResult(result)
-        }
-      }
-    } else if fromSentTransfersScreen || fromReceivedTransfersScreen {
-      TransfersAPI.shared.loadTransfers { [weak self] result in
-        DispatchQueue.mainAsyncIfNeeded {
-          self?.handleAPIResult(result)
-        }
-      }
-    } else {
-      fatalError("unknown context")
-    }
+    })
   }
 
-  private func handleAPIResult<T>(_ result: Result<[T], Error>) {
+  private func handleAPIResult(
+    _ result: Result<[ItemViewModel], Error>
+  ) {
     switch result {
     case let .success(items):
       if fromFriendsScreen && User.shared?.isPremium == true {
         (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).cache.save(items as! [Friend])
       }
       self.retryCount = 0
-
-      var filteredItems = items as [Any]
-      if let transfers = items as? [Transfer] {
-        if fromSentTransfersScreen {
-          filteredItems = transfers.filter(\.isSender)
-        } else {
-          filteredItems = transfers.filter { !$0.isSender }
-        }
-      }
-
-      self.items = filteredItems.map { createItemVieModel(item: $0 )}
+      self.items = items
       self.refreshControl?.endRefreshing()
       self.tableView.reloadData()
-
     case let .failure(error):
       if shouldRetry && retryCount < maxRetryCount {
         retryCount += 1
-
         refresh()
         return
       }
 
       retryCount = 0
 
-      if fromFriendsScreen && User.shared?.isPremium == true {
-        (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).cache.loadFriends { [weak self] result in
-          DispatchQueue.mainAsyncIfNeeded {
-            switch result {
-            case let .success(items):
-              self?.items = items.map { [weak self] in (self?.createItemVieModel(item: $0))! }
-              self?.tableView.reloadData()
 
-            case let .failure(error):
-              let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-              alert.addAction(UIAlertAction(title: "Ok", style: .default))
-              self?.presenterVC.present(alert, animated: true)
-            }
-            self?.refreshControl?.endRefreshing()
-          }
-        }
-      } else {
-        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .default))
-        self.presenterVC.present(alert, animated: true)
-        self.refreshControl?.endRefreshing()
-      }
+      let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+      alert.addAction(UIAlertAction(title: "Ok", style: .default))
+      self.presenterVC.present(alert, animated: true)
+      self.refreshControl?.endRefreshing()
     }
   }
 
@@ -174,7 +134,7 @@ class ListViewController: UITableViewController {
     didSelectRowAt indexPath: IndexPath
   ) {
     let item = items[indexPath.row]
-    item.selection()
+    item.selection(item)
   }
 
   @objc func addCard() {
@@ -191,38 +151,6 @@ class ListViewController: UITableViewController {
 
   @objc func requestMoney() {
     show(RequestMoneyViewController(), sender: self)
-  }
-
-  func createItemVieModel(item: Any) -> ItemViewModel {
-    if let friend = item as? Friend {
-
-      return ItemViewModel(
-        friend: friend
-      ) {
-        let vc = FriendDetailsViewController()
-        vc.friend = friend
-        self.show(vc, sender: self)
-      }
-    } else if let card = item as? Card {
-      return ItemViewModel(
-        card: card
-      ) {
-        let vc = CardDetailsViewController()
-        vc.card = card
-        self.show(vc, sender: self)
-      }
-    } else if let transfer = item as? Transfer {
-      return  ItemViewModel(
-        transfer: transfer,
-        longDateStyle: longDateStyle
-      ) {
-        let vc = TransferDetailsViewController()
-        vc.transfer = transfer
-        self.show(vc, sender: self)
-      }
-    } else {
-      fatalError()
-    }
   }
 }
 

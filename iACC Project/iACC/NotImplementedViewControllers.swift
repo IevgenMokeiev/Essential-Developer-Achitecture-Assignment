@@ -5,7 +5,7 @@
 import UIKit
 
 class FriendDetailsViewController: NotImplementedViewController {
-	var friend: Friend?
+  var item: ItemViewModel?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -23,7 +23,7 @@ class AddFriendViewController: NotImplementedViewController {
 }
 
 class CardDetailsViewController: NotImplementedViewController {
-	var card: Card?
+  var item: ItemViewModel?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -41,7 +41,7 @@ class AddCardViewController: NotImplementedViewController {
 }
 
 class TransferDetailsViewController: NotImplementedViewController {
-	var transfer: Transfer?
+	var item: ItemViewModel?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()

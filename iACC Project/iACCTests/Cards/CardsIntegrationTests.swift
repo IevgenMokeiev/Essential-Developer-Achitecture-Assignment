@@ -192,7 +192,9 @@ private extension ListViewController {
 	
 	func isShowingDetails(for card: Card) -> Bool {
 		let vc = navigationController?.topViewController as? CardDetailsViewController
-		return vc?.card == card
+    let item = ItemViewModel(card: card) { _ in
+    }
+		return vc?.item == item
 	}
 
 	var hasAddCardButton: Bool {

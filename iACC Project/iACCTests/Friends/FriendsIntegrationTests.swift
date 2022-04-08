@@ -393,7 +393,11 @@ private extension ListViewController {
 	
 	func isShowingDetails(for friend: Friend) -> Bool {
 		let vc = navigationController?.topViewController as? FriendDetailsViewController
-		return vc?.friend == friend
+    let item = ItemViewModel(
+      friend: friend
+    ) { _ in
+      }
+		return vc?.item == item
 	}
 	
 	var hasAddFriendButton: Bool {
