@@ -195,52 +195,31 @@ class ListViewController: UITableViewController {
 
   func createItemVieModel(item: Any) -> ItemViewModel {
     if let friend = item as? Friend {
+
       return ItemViewModel(
-        name: friend.name,
-        detail: friend.phone
-        ) {
-          let vc = FriendDetailsViewController()
-          vc.friend = friend
-          self.show(vc, sender: self)
-        }
+        friend: friend
+      ) {
+        let vc = FriendDetailsViewController()
+        vc.friend = friend
+        self.show(vc, sender: self)
+      }
     } else if let card = item as? Card {
       return ItemViewModel(
-        name: card.number,
-        detail: card.holder
-        ) {
-          let vc = CardDetailsViewController()
-          vc.card = card
-          self.show(vc, sender: self)
-        }
-    } else if let transfer = item as? Transfer {
-      let numberFormatter = Formatters.number
-      numberFormatter.numberStyle = .currency
-      numberFormatter.currencyCode = transfer.currencyCode
-
-      let amount = numberFormatter.string(from: transfer.amount as NSNumber)!
-
-      let dateFormatter = Formatters.date
-
-      var detail: String = ""
-
-      if longDateStyle {
-        dateFormatter.dateStyle = .long
-        dateFormatter.timeStyle = .short
-        detail = "Sent to: \(transfer.recipient) on \(dateFormatter.string(from: transfer.date))"
-      } else {
-        dateFormatter.dateStyle = .short
-        dateFormatter.timeStyle = .short
-        detail = "Received from: \(transfer.sender) on \(dateFormatter.string(from: transfer.date))"
+        card: card
+      ) {
+        let vc = CardDetailsViewController()
+        vc.card = card
+        self.show(vc, sender: self)
       }
-
+    } else if let transfer = item as? Transfer {
       return  ItemViewModel(
-        name: "\(amount) • \(transfer.description)",
-        detail: detail
-        ) {
-          let vc = TransferDetailsViewController()
-          vc.transfer = transfer
-          self.show(vc, sender: self)
-        }
+        transfer: transfer,
+        longDateStyle: longDateStyle
+      ) {
+        let vc = TransferDetailsViewController()
+        vc.transfer = transfer
+        self.show(vc, sender: self)
+      }
     } else {
       fatalError()
     }
