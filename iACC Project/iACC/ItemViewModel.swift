@@ -6,6 +6,7 @@ struct ItemViewModel {
 
   let name: String
   let detail: String
+  let selection: () -> Void
 
 }
 

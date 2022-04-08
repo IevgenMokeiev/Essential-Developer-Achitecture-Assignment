@@ -158,18 +158,54 @@ class ListViewController: UITableViewController {
     let item = items[indexPath.row]
     let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell") ?? UITableViewCell(style: .subtitle, reuseIdentifier: "ItemCell")
 
-    var itemViewModel: ItemViewModel?
+    let itemViewModel = createItemVieModel(item: item)
 
+    cell.configure(item: itemViewModel)
+
+    return cell
+  }
+
+  override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    let item = items[indexPath.row]
+    let itemViewModel = createItemVieModel(item: item)
+    itemViewModel.selection()
+  }
+
+  @objc func addCard() {
+    show(AddCardViewController(), sender: self)
+  }
+
+  @objc func addFriend() {
+    show(AddFriendViewController(), sender: self)
+  }
+
+  @objc func sendMoney() {
+    show(SendMoneyViewController(), sender: self)
+  }
+
+  @objc func requestMoney() {
+    show(RequestMoneyViewController(), sender: self)
+  }
+
+  func createItemVieModel(item: Any) -> ItemViewModel {
     if let friend = item as? Friend {
-      itemViewModel = ItemViewModel(
+      return ItemViewModel(
         name: friend.name,
         detail: friend.phone
-      )
+        ) {
+          let vc = FriendDetailsViewController()
+          vc.friend = friend
+          self.show(vc, sender: self)
+        }
     } else if let card = item as? Card {
-      itemViewModel = ItemViewModel(
+      return ItemViewModel(
         name: card.number,
         detail: card.holder
-      )
+        ) {
+          let vc = CardDetailsViewController()
+          vc.card = card
+          self.show(vc, sender: self)
+        }
     } else if let transfer = item as? Transfer {
       let numberFormatter = Formatters.number
       numberFormatter.numberStyle = .currency
@@ -191,50 +227,17 @@ class ListViewController: UITableViewController {
         detail = "Received from: \(transfer.sender) on \(dateFormatter.string(from: transfer.date))"
       }
 
-      itemViewModel = ItemViewModel(
+      return  ItemViewModel(
         name: "\(amount) • \(transfer.description)",
         detail: detail
-      )
-    }
-
-    cell.configure(item: itemViewModel!)
-
-    return cell
-  }
-
-  override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    let item = items[indexPath.row]
-    if let friend = item as? Friend {
-      let vc = FriendDetailsViewController()
-      vc.friend = friend
-      show(vc, sender: self)
-    } else if let card = item as? Card {
-      let vc = CardDetailsViewController()
-      vc.card = card
-      show(vc, sender: self)
-    } else if let transfer = item as? Transfer {
-      let vc = TransferDetailsViewController()
-      vc.transfer = transfer
-      show(vc, sender: self)
+        ) {
+          let vc = TransferDetailsViewController()
+          vc.transfer = transfer
+          self.show(vc, sender: self)
+        }
     } else {
-      fatalError("unknown item: \(item)")
+      fatalError()
     }
-  }
-
-  @objc func addCard() {
-    show(AddCardViewController(), sender: self)
-  }
-
-  @objc func addFriend() {
-    show(AddFriendViewController(), sender: self)
-  }
-
-  @objc func sendMoney() {
-    show(SendMoneyViewController(), sender: self)
-  }
-
-  @objc func requestMoney() {
-    show(RequestMoneyViewController(), sender: self)
   }
 }
 
