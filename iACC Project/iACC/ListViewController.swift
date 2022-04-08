@@ -5,7 +5,7 @@
 import UIKit
 
 class ListViewController: UITableViewController {
-  var items = [Any]()
+  var items = [ItemViewModel]()
 
   var retryCount = 0
   var maxRetryCount = 0
@@ -107,7 +107,7 @@ class ListViewController: UITableViewController {
         }
       }
 
-      self.items = filteredItems
+      self.items = filteredItems.map { createItemVieModel(item: $0 )}
       self.refreshControl?.endRefreshing()
       self.tableView.reloadData()
 
@@ -126,7 +126,7 @@ class ListViewController: UITableViewController {
           DispatchQueue.mainAsyncIfNeeded {
             switch result {
             case let .success(items):
-              self?.items = items
+              self?.items = items.map { [weak self] in (self?.createItemVieModel(item: $0))! }
               self?.tableView.reloadData()
 
             case let .failure(error):
@@ -150,25 +150,31 @@ class ListViewController: UITableViewController {
     1
   }
 
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  override func tableView(
+    _ tableView: UITableView,
+    numberOfRowsInSection section: Int
+  ) -> Int {
     items.count
   }
 
-  override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+  override func tableView(
+    _ tableView: UITableView,
+    cellForRowAt indexPath: IndexPath
+  ) -> UITableViewCell {
     let item = items[indexPath.row]
     let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell") ?? UITableViewCell(style: .subtitle, reuseIdentifier: "ItemCell")
 
-    let itemViewModel = createItemVieModel(item: item)
-
-    cell.configure(item: itemViewModel)
+    cell.configure(item: item)
 
     return cell
   }
 
-  override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+  override func tableView(
+    _ tableView: UITableView,
+    didSelectRowAt indexPath: IndexPath
+  ) {
     let item = items[indexPath.row]
-    let itemViewModel = createItemVieModel(item: item)
-    itemViewModel.selection()
+    item.selection()
   }
 
   @objc func addCard() {
