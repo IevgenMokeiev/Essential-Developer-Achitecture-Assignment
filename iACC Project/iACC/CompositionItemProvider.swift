@@ -14,11 +14,11 @@ struct CompositionItemProvider: ItemProvider {
       case let .success(items):
         completion(.success(items))
       case .failure:
-        fallbackAPI.loadItems { items in
+        fallbackAPI.loadItems { result in
           switch result {
-          case let .success(items):
+          case .success(let items):
             completion(.success(items))
-          case let .failure(error):
+          case .failure(let error):
             completion(.failure(error))
           }
         }

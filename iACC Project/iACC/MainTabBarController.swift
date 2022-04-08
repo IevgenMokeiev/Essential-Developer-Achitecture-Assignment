@@ -76,7 +76,7 @@ class MainTabBarController: UITabBarController {
       let destination = FriendDetailsViewController()
       destination.friend = friend
       vc.show(destination, sender: self)
-    }
+    }.retry(2)
 
     var adapter = apiAdapter
     if User.shared?.isPremium == true {
@@ -84,7 +84,9 @@ class MainTabBarController: UITabBarController {
     }
 
     vc.itemProvider = adapter
-    vc.fromFriendsScreen = true
+    vc.title = "Friends"
+
+    vc.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addFriend))
     return vc
   }
 
@@ -97,9 +99,10 @@ class MainTabBarController: UITabBarController {
       let destination = TransferDetailsViewController()
       destination.transfer = transfer
       vc.show(destination, sender: self)
-    }
+    }.retry(1)
     vc.itemProvider = adapter
-    vc.fromSentTransfersScreen = true
+    vc.navigationItem.title = "Sent"
+    vc.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Send", style: .done, target: self, action: #selector(sendMoney))
     return vc
   }
 
@@ -112,9 +115,10 @@ class MainTabBarController: UITabBarController {
       let destination = TransferDetailsViewController()
       destination.transfer = transfer
       vc.show(destination, sender: self)
-    }
+    }.retry(1)
     vc.itemProvider = adapter
-    vc.fromReceivedTransfersScreen = true
+    vc.navigationItem.title = "Received"
+    vc.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Request", style: .done, target: self, action: #selector(requestMoney))
     return vc
   }
 
@@ -128,7 +132,26 @@ class MainTabBarController: UITabBarController {
       vc.show(destination, sender: self)
     }
     vc.itemProvider = adapter
-    vc.fromCardsScreen = true
+    vc.title = "Cards"
+    vc.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addCard))
     return vc
+  }
+
+  // MARK: - Actions
+
+  @objc func addCard() {
+    selectedViewController?.show(AddCardViewController(), sender: self)
+  }
+
+  @objc func addFriend() {
+    selectedViewController?.show(AddFriendViewController(), sender: self)
+  }
+
+  @objc func sendMoney() {
+    selectedViewController?.show(SendMoneyViewController(), sender: self)
+  }
+
+  @objc func requestMoney() {
+    selectedViewController?.show(RequestMoneyViewController(), sender: self)
   }
 }

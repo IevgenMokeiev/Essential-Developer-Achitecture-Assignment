@@ -5,58 +5,14 @@
 import UIKit
 
 class ListViewController: UITableViewController {
+
   var items = [ItemViewModel]()
-
-  var retryCount = 0
-  var maxRetryCount = 0
-  var shouldRetry = false
-
-  var longDateStyle = false
-
-  var fromReceivedTransfersScreen = false
-  var fromSentTransfersScreen = false
-  var fromCardsScreen = false
-  var fromFriendsScreen = false
-
   var itemProvider: ItemProvider?
 
   override func viewDidLoad() {
     super.viewDidLoad()
-
     refreshControl = UIRefreshControl()
     refreshControl?.addTarget(self, action: #selector(refresh), for: .valueChanged)
-
-    if fromFriendsScreen {
-      shouldRetry = true
-      maxRetryCount = 2
-
-      title = "Friends"
-
-      navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addFriend))
-
-    } else if fromCardsScreen {
-      shouldRetry = false
-
-      title = "Cards"
-
-      navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addCard))
-
-    } else if fromSentTransfersScreen {
-      shouldRetry = true
-      maxRetryCount = 1
-      longDateStyle = true
-
-      navigationItem.title = "Sent"
-      navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Send", style: .done, target: self, action: #selector(sendMoney))
-
-    } else if fromReceivedTransfersScreen {
-      shouldRetry = true
-      maxRetryCount = 1
-      longDateStyle = false
-
-      navigationItem.title = "Received"
-      navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Request", style: .done, target: self, action: #selector(requestMoney))
-    }
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -82,22 +38,14 @@ class ListViewController: UITableViewController {
   ) {
     switch result {
     case let .success(items):
-      self.retryCount = 0
       self.items = items
       self.refreshControl?.endRefreshing()
       self.tableView.reloadData()
     case let .failure(error):
-      if shouldRetry && retryCount < maxRetryCount {
-        retryCount += 1
-        refresh()
-        return
-      }
-
-      retryCount = 0
       let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
       alert.addAction(UIAlertAction(title: "Ok", style: .default))
-      self.presenterVC.showDetailViewController(alert, sender: self)
-      self.refreshControl?.endRefreshing()
+      showDetailViewController(alert, sender: self)
+      refreshControl?.endRefreshing()
     }
   }
 
@@ -118,9 +66,7 @@ class ListViewController: UITableViewController {
   ) -> UITableViewCell {
     let item = items[indexPath.row]
     let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell") ?? UITableViewCell(style: .subtitle, reuseIdentifier: "ItemCell")
-
     cell.configure(item: item)
-
     return cell
   }
 
@@ -130,22 +76,6 @@ class ListViewController: UITableViewController {
   ) {
     let item = items[indexPath.row]
     item.selection()
-  }
-
-  @objc func addCard() {
-    show(AddCardViewController(), sender: self)
-  }
-
-  @objc func addFriend() {
-    show(AddFriendViewController(), sender: self)
-  }
-
-  @objc func sendMoney() {
-    show(SendMoneyViewController(), sender: self)
-  }
-
-  @objc func requestMoney() {
-    show(RequestMoneyViewController(), sender: self)
   }
 }
 
