@@ -4,7 +4,7 @@
 
 struct CardAPIItemProviderAdapter: ItemProvider {
   let api: CardAPI
-  let selection: (ItemViewModel) -> Void
+  let selection: (Card) -> Void
 
   func loadItems(
     completion: @escaping (Result<[ItemViewModel], Error>) -> Void
@@ -12,7 +12,11 @@ struct CardAPIItemProviderAdapter: ItemProvider {
     api.loadCards { result in
       switch result {
       case .success(let cards):
-        let items = cards.map { ItemViewModel(card: $0, selection: selection) }
+        let items = cards.map { card in
+          ItemViewModel(card: card) {
+            selection(card)
+          }
+        }
         completion(.success(items))
       case .failure(let error):
         completion(.failure(error))

@@ -233,12 +233,7 @@ private extension ListViewController {
 	
 	func isShowingDetails(for transfer: Transfer) -> Bool {
 		let vc = navigationController?.topViewController as? TransferDetailsViewController
-    let item = ItemViewModel(
-      transfer: transfer,
-      longDateStyle: false
-    ) { _ in
-      }
-		return vc?.item == item
+		return vc?.transfer == transfer
 	}
 
 	var hasRequestMoneyButton: Bool {

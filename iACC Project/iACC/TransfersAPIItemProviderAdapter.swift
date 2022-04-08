@@ -5,7 +5,7 @@
 struct TransfersAPIItemProviderAdapter: ItemProvider {
   let api: TransfersAPI
   let fromSentTransfersScreen: Bool
-  let selection: (ItemViewModel) -> Void
+  let selection: (Transfer) -> Void
 
   func loadItems(
     completion: @escaping (Result<[ItemViewModel], Error>) -> Void
@@ -21,12 +21,12 @@ struct TransfersAPIItemProviderAdapter: ItemProvider {
         }
 
         let items = filteredItems
-          .map {
+          .map { transfer in
           ItemViewModel(
-            transfer: $0,
-            longDateStyle: fromSentTransfersScreen,
-            selection: selection
-          )
+            transfer: transfer,
+            longDateStyle: fromSentTransfersScreen) {
+              selection(transfer)
+            }
         }
         completion(.success(items))
       case .failure(let error):

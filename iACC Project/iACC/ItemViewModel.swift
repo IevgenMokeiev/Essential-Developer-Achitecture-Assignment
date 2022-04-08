@@ -7,7 +7,7 @@ import Foundation
 struct ItemViewModel: Equatable {
   let name: String
   let detail: String
-  let selection: (ItemViewModel) -> Void
+  let selection: () -> Void
 
   static func == (lhs: ItemViewModel, rhs: ItemViewModel) -> Bool {
     return lhs.name == rhs.name
@@ -16,7 +16,7 @@ struct ItemViewModel: Equatable {
 
 extension ItemViewModel {
 
-  init(friend: Friend, selection: @escaping (ItemViewModel) -> Void) {
+  init(friend: Friend, selection: @escaping () -> Void) {
     self.init(
       name: friend.name,
       detail: friend.phone,
@@ -24,7 +24,7 @@ extension ItemViewModel {
     )
   }
 
-  init(card: Card, selection: @escaping (ItemViewModel) -> Void) {
+  init(card: Card, selection: @escaping () -> Void) {
     self.init(
       name: card.number,
       detail: card.holder,
@@ -35,7 +35,7 @@ extension ItemViewModel {
   init(
     transfer: Transfer,
     longDateStyle: Bool,
-    selection: @escaping (ItemViewModel) -> Void
+    selection: @escaping () -> Void
   ) {
     let numberFormatter = Formatters.number
     numberFormatter.numberStyle = .currency

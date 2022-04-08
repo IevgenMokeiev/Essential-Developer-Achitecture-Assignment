@@ -6,9 +6,16 @@ import UIKit
 
 class MainTabBarController: UITabBarController {
 
-  convenience init() {
-    self.init(nibName: nil, bundle: nil)
+  let cache: FriendsCache
+
+  init(cache: FriendsCache) {
+    self.cache = cache
+    super.init(nibName: nil, bundle: nil)
     self.setupViewController()
+  }
+
+  required init?(coder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
   }
 
   private func setupViewController() {
@@ -52,23 +59,28 @@ class MainTabBarController: UITabBarController {
   }
 
   private func makeFriendsList() -> ListViewController {
-
     let vc = ListViewController()
-    var adapter: ItemProvider = FriendsAPIItemProviderAdapter(
-      api: FriendsAPI.shared
-    ) { [weak self] item in
+
+    let cacheAdapter = FriendsCacheItemProviderAdapter(
+      cache: cache
+    ) { [weak self] friend in
       let destination = FriendDetailsViewController()
+      destination.friend = friend
+      vc.show(destination, sender: self)
+    }
+    let apiAdapter: ItemProvider = FriendsAPIItemProviderAdapter(
+      api: FriendsAPI.shared,
+      isPremium: User.shared?.isPremium == true,
+      cache: cache
+    ) { [weak self] friend in
+      let destination = FriendDetailsViewController()
+      destination.friend = friend
       vc.show(destination, sender: self)
     }
 
+    var adapter = apiAdapter
     if User.shared?.isPremium == true {
-      let cacheAdapter = FriendsCacheItemProviderAdapter(
-        cache: FriendsCache()
-      ) { [weak self] item in
-        let destination = FriendDetailsViewController()
-        vc.show(destination, sender: self)
-      }
-      adapter = adapter.fallback(cacheAdapter)
+      adapter = apiAdapter.fallback(cacheAdapter)
     }
 
     vc.itemProvider = adapter
@@ -81,9 +93,9 @@ class MainTabBarController: UITabBarController {
     let adapter = TransfersAPIItemProviderAdapter(
       api: TransfersAPI.shared,
       fromSentTransfersScreen: true
-    ) { [weak self] item in
+    ) { [weak self] transfer in
       let destination = TransferDetailsViewController()
-      destination.item = item
+      destination.transfer = transfer
       vc.show(destination, sender: self)
     }
     vc.itemProvider = adapter
@@ -96,9 +108,9 @@ class MainTabBarController: UITabBarController {
     let adapter = TransfersAPIItemProviderAdapter(
       api: TransfersAPI.shared,
       fromSentTransfersScreen: false
-    ) { [weak self] item in
+    ) { [weak self] transfer in
       let destination = TransferDetailsViewController()
-      destination.item = item
+      destination.transfer = transfer
       vc.show(destination, sender: self)
     }
     vc.itemProvider = adapter
@@ -110,9 +122,9 @@ class MainTabBarController: UITabBarController {
     let vc = ListViewController()
     let adapter = CardAPIItemProviderAdapter(
       api: CardAPI.shared
-    ) { [weak self] item in
+    ) { [weak self] card in
       let destination = CardDetailsViewController()
-      destination.item = item
+      destination.card = card
       vc.show(destination, sender: self)
     }
     vc.itemProvider = adapter

@@ -82,9 +82,6 @@ class ListViewController: UITableViewController {
   ) {
     switch result {
     case let .success(items):
-      if fromFriendsScreen && User.shared?.isPremium == true {
-        (UIApplication.shared.connectedScenes.first?.delegate as! SceneDelegate).cache.save(items as! [Friend])
-      }
       self.retryCount = 0
       self.items = items
       self.refreshControl?.endRefreshing()
@@ -97,11 +94,9 @@ class ListViewController: UITableViewController {
       }
 
       retryCount = 0
-
-
       let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
       alert.addAction(UIAlertAction(title: "Ok", style: .default))
-      self.presenterVC.present(alert, animated: true)
+      self.presenterVC.showDetailViewController(alert, sender: self)
       self.refreshControl?.endRefreshing()
     }
   }
@@ -134,7 +129,7 @@ class ListViewController: UITableViewController {
     didSelectRowAt indexPath: IndexPath
   ) {
     let item = items[indexPath.row]
-    item.selection(item)
+    item.selection()
   }
 
   @objc func addCard() {

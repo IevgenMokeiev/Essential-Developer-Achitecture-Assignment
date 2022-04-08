@@ -4,7 +4,7 @@
 
 struct FriendsCacheItemProviderAdapter: ItemProvider {
   let cache: FriendsCache
-  let selection: (ItemViewModel) -> Void
+  let selection: (Friend) -> Void
 
   func loadItems(
     completion: @escaping (Result<[ItemViewModel], Error>) -> Void
@@ -12,7 +12,11 @@ struct FriendsCacheItemProviderAdapter: ItemProvider {
     cache.loadFriends { result in
       switch result {
       case .success(let friends):
-        let items = friends.map { ItemViewModel(friend: $0, selection: selection) }
+        let items = friends.map { friend in
+          ItemViewModel(friend: friend) {
+            selection(friend)
+          }
+        }
         completion(.success(items))
       case .failure(let error):
         completion(.failure(error))
